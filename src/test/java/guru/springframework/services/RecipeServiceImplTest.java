@@ -38,12 +38,12 @@ public class RecipeServiceImplTest {
     }
 
     @Test
-    public void testMockCreation(){
+    public void testMockCreation() {
         assertNotNull(recipeRepository);
     }
 
     @Test
-    public void findById() throws Exception{
+    public void findById() throws Exception {
         Recipe recipe = new Recipe();
         recipe.setId(1L);
         Optional<Recipe> recipeOptional = Optional.of(recipe);
@@ -70,5 +70,18 @@ public class RecipeServiceImplTest {
 
         assertEquals(1, recipes.size());
         verify(recipeRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void deleteByIdTest() throws Exception {
+
+        //given
+        Long idToDelete = 2L;
+        recipeService.deleteById(idToDelete);
+
+        //no when
+
+        //then
+        verify(recipeRepository, times(1)).deleteById(anyLong());
     }
 }

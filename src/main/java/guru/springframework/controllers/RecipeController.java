@@ -44,4 +44,11 @@ public class RecipeController {
         RecipeCommand savedRecipeCommand = recipeService.saveRecipeCommand(recipeCommand);
         return "redirect:/recipe/" + savedRecipeCommand.getId() + "/show";
     }
+
+    @GetMapping("/recipe/{id}/delete")
+    public String deleteById(@PathVariable String id){
+        log.debug("Deleting by id: {}", id);
+        recipeService.deleteById(Long.valueOf(id));
+        return "redirect:/";
+    }
 }

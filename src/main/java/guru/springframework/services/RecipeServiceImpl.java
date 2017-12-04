@@ -29,8 +29,6 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public Set<Recipe> getRecipes() {
-        log.debug("I'm in the service");
-
         Set<Recipe> recipeSet = new HashSet<>();
         recipeRepository.findAll().iterator().forEachRemaining(recipeSet::add);
         return recipeSet;
@@ -44,6 +42,11 @@ public class RecipeServiceImpl implements RecipeService {
             throw new RuntimeException("Recipe not found!");
         }
         return recipeOptional.get();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        recipeRepository.deleteById(id);
     }
 
     @Override
