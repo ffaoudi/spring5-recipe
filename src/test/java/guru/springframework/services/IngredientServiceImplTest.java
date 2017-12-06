@@ -97,4 +97,14 @@ public class IngredientServiceImplTest {
         verify(recipeRepository, times(1)).findById(anyLong());
         verify(recipeRepository, times(1)).save(any(Recipe.class));
     }
+
+    @Test
+    public void deleteByIdTest() throws Exception{
+        //given
+        Long idToDelete = 1L;
+        ingredientService.deleteById(idToDelete);
+
+        //then
+        verify(ingredientRepository, times(1)).deleteById(anyLong());
+    }
 }

@@ -91,4 +91,10 @@ public class IngredientServiceImpl implements IngredientService {
 
         return ingredientToIngredientCommand.convert(savedIngredientOptional.get());
     }
+
+    @Override
+    public void deleteById(Long ingredientId) {
+        log.debug("Deleting ingredient: {}", ingredientId);
+        ingredientRepository.deleteById(ingredientId);
+    }
 }
