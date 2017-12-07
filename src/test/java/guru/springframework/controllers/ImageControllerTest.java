@@ -3,10 +3,12 @@ package guru.springframework.controllers;
 import guru.springframework.commands.RecipeCommand;
 import guru.springframework.services.ImageService;
 import guru.springframework.services.RecipeService;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -37,7 +39,7 @@ public class ImageControllerTest {
     }
 
     @Test
-    public void handleImageGet() throws Exception{
+    public void handleImageGet() throws Exception {
         //given
         RecipeCommand command = new RecipeCommand();
         command.setId(1L);
@@ -54,7 +56,7 @@ public class ImageControllerTest {
     }
 
     @Test
-    public void handleImagePost() throws Exception{
+    public void handleImagePost() throws Exception {
         MockMultipartFile multipartFile = new MockMultipartFile("imagefile", "testing.txt", "text/plain", "String Framework Guru".getBytes());
 
         mockMvc.perform(multipart("/recipe/1/image").file(multipartFile))
@@ -62,5 +64,33 @@ public class ImageControllerTest {
                 .andExpect(header().string("Location", "/recipe/1/show"));
 
         verify(imageService, times(1)).saveImageFile(anyLong(), any());
+    }
+
+    @Test
+    public void renderImageFromDB() throws Exception {
+        //given
+        RecipeCommand command = new RecipeCommand();
+        command.setId(1L);
+
+        String s = "fake image test";
+        Byte[] bytesBoxed = new Byte[s.getBytes().length];
+
+        int i = 0;
+        for (byte primByte : s.getBytes()) {
+            bytesBoxed[i++] = primByte;
+        }
+
+        command.setImage(bytesBoxed);
+
+        when(recipeService.findRecipeCommandById(anyLong())).thenReturn(command);
+
+        //when
+        MockHttpServletResponse response = mockMvc.perform(get("/recipe/1/recipeimage"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse();
+
+        byte[] responseBytes = response.getContentAsByteArray();
+
+        Assert.assertEquals(s.getBytes().length, responseBytes.length);
     }
 }
